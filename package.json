@@ -1,0 +1,29 @@
+{
+  "name": "filter-json",
+  "version": "1.0.0",
+  "description": "Check, filter and compare JSONs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lefcott19/filter-json.git"
+  },
+  "keywords": [
+    "json",
+    "object filter",
+    "filter",
+    "json filter",
+    "object filter",
+    "filter objects",
+    "object check",
+    "compare objects"
+  ],
+  "author": "Leandro Cotti",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lefcott19/filter-json/issues"
+  },
+  "homepage": "https://github.com/lefcott19/filter-json#readme"
+}
