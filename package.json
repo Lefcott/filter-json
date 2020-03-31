@@ -1,5 +1,5 @@
 {
-  "name": "filter-json",
+  "name": "@lefcott/filter-json",
   "version": "1.0.0",
   "description": "Check, filter and compare JSONs",
   "main": "index.js",
