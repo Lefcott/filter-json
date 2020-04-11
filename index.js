@@ -38,10 +38,9 @@ const compare = (a, b) => {
   if (b instanceof Object) {
     let A;
     const transform = `${prefix}transform`; 
-    if (b[transform] instanceof Function) {
-      A = b[transform](a);
-      delete b[transform];
-    }
+    if (b[transform] instanceof Function) A = b[transform](a);
+    else if(typeof b[transform] === 'string') A = eval(`(${b[transform]})`)(a);
+    delete b[transform];
     A = A || a;
     const keys = Object.keys(b);
     const opKeys = keys.filter(key => key.substring(0, prefix.length) === prefix);
