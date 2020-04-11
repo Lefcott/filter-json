@@ -35,4 +35,6 @@ result = result && check(ObjToCheck, Condition6) === true;
 const Condition7 = { 'a.b.d.0': { $transform: d => d + 2, $field: 'a.b.d.2' } }; // Sums 2 to a.b.d[0] and checks if result is equal to a.b.d[2]
 result = result && check(ObjToCheck, Condition7) === true;
 
+if (!result) console.error('check() failed!!!');
+
 module.exports = result;

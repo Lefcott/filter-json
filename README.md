@@ -51,7 +51,7 @@ const Condition7 = { 'a.b.d.0': { $transform: d => d + 2, $field: 'a.b.d.2' } };
 check(ObjToCheck, Condition7); // returns true
 ```
 
-### Filtering an object with a condition:
+### Filtering an array of objects with a condition:
 ```js
 const { filter } = require('@lefcott/filter-json');
 
@@ -66,4 +66,22 @@ const OriginalObjects = [
 
 filter(OriginalObjects, { 'a.b': { $gte: 3 } });
 // Returns [{ a: { b: 3 } }, { a: { b: 4 } }, { a: { b: 5 } }]
+```
+
+### Checking if all objects of an array are equal
+```js
+const { compareN } = require('@lefcott/filter-json');
+
+const ObjectList = [
+  { a: { b: 1, c: 2 } },
+  { a: { b: 1, c: 3 } },
+  { a: { b: 1, c: 4, d: null } }
+];
+const FieldsToIgnore = ['a.c', 'a.d'];
+
+// Calling compareN without fields to ignore
+compareN(ObjectList); // returns false
+
+// Calling compareN with a list of fields to ignore
+compareN(ObjectList, FieldsToIgnore); // returns true
 ```

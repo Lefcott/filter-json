@@ -1,6 +1,5 @@
-const result = require('./check') && require('./filter');
+const result = require('./check') && require('./filter') && require('./compareN');
 
-if (result !== true) console.error('Something went wrong!!!');
-else console.log('Checks passed!');
+if (result === true) console.log('Checks passed!');
 
 module.exports = result;

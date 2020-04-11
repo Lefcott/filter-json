@@ -13,4 +13,8 @@ const OriginalObjects = [
 
 const filtered = filter(OriginalObjects, { 'a.b': { $gte: 3 } })
 
-module.exports = helper.compareObjects(filtered, [{ a: { b: 3 } }, { a: { b: 4 } }, { a: { b: 5 } }])
+const result = helper.compareObjects(filtered, [{ a: { b: 3 } }, { a: { b: 4 } }, { a: { b: 5 } }]);
+
+if (!result) console.error('filter() failed!!!');
+
+module.exports = result;
