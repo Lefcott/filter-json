@@ -1,6 +1,7 @@
 const helper = require('./helper');
 
 let prefix = '$';
+let originalObj = null;
 /**
  * Configures the package
  * @param {object} Config - Configuration.
@@ -8,45 +9,13 @@ let prefix = '$';
  */
 const configure = Config => Config.prefix && (prefix = Config.prefix);
 
-/* eslint-disable guard-for-in */
-const compareObjects = (obj1, obj2, excludeFields = []) => {
-  if (obj1 instanceof Object && obj2 instanceof Object) {
-    const keys1 = Object.keys(obj1);
-    const keys2 = Object.keys(obj2);
-    for (let k = 0; k < keys1.length; k += 1) {
-      if (keys2.indexOf(keys1[k]) === -1) {
-        return false;
-      }
-    }
-    for (let k = 0; k < keys2.length; k += 1) {
-      if (keys1.indexOf(keys2[k]) === -1) {
-        return false;
-      }
-    }
-    for (let k = 0; k < keys1.length; k += 1) {
-      if (excludeFields.indexOf(keys1[k]) !== -1) {
-        continue;
-      }
-      if (obj1[keys1[k]] instanceof Object) {
-        if (!compareObjects(obj1[keys1[k]], obj2[keys1[k]], [])) {
-          return false;
-        }
-      } else if (obj1[keys1[k]] !== obj2[keys1[k]]) {
-        return false;
-      }
-    }
-    return true;
-  }
-  return obj1 === obj2;
-};
-
 // Example: ([{k: 1}, {k: 1}, {k: 1}])
 //   -----> true
 // Example: ([{k: 1}, {k: 1, j: 1}, {k: 1}])
 //   -----> false
 const compareNObjects = (objects, excludeFields) => {
   for (let k = 0; k < objects.length - 1; k += 1) {
-    if (!compareObjects(objects[k], objects[k + 1], excludeFields)) {
+    if (!helper.compareObjects(objects[k], objects[k + 1], excludeFields)) {
       return false;
     }
   }
@@ -79,13 +48,13 @@ const compare = (a, b) => {
     if (opKeys.length > 0) {
       for (let k = 0; k < opKeys.length; k += 1) {
         const key = opKeys[k];
-        if (!helper.compareValues(A, key, b[key], prefix)) {
+        if (!helper.compareValues(originalObj, A, key, b[key], prefix)) {
           return false;
         }
       }
       return true;
     }
-    return compareObjects(a, b, []);
+    return helper.compareObjects(a, b, []);
   }
   return a === b;
 };
@@ -94,7 +63,9 @@ const compare = (a, b) => {
 // {"k1": {"k2": "hello word"}}, {"k1.k2": "/word/"} ---> true
 // {"k1": {"k2": "hello word"}}, {"k1.k2": "asdf"} ---> false
 const check = (obj, condition) => {
+  if (!originalObj) originalObj = obj;
   if (!(condition instanceof Object)) {
+    originalObj = null;
     obj = getRegexOrValue(obj);
     return obj === condition;
   }
@@ -113,6 +84,7 @@ const check = (obj, condition) => {
         }
       }
       if (!checkedOk) {
+        originalObj = null;
         return false;
       }
       continue;
@@ -120,6 +92,7 @@ const check = (obj, condition) => {
     if (conditionKey === `${prefix}and`) {
       for (let k = 0; k < condition[conditionKey].length; k += 1) {
         if (!check(obj, condition[conditionKey][k])) {
+          originalObj = null;
           return false;
         }
       }
@@ -130,15 +103,18 @@ const check = (obj, condition) => {
     for (let m = 0; m < splittedKey.length; m += 1) {
       currObj = currObj[splittedKey[m]];
       if ([null, undefined].includes(currObj) && m < splittedKey.length - 1) {
+        originalObj = null;
         return false;
       }
     }
     condition[conditionKey] = getRegexOrValue(condition[conditionKey]);
 
     if (!compare(currObj, condition[conditionKey])) {
+      originalObj = null;
       return false;
     }
   }
+  originalObj = null;
   return true;
 };
 
