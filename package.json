@@ -1,6 +1,6 @@
 {
   "name": "@lefcott/filter-json",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Check, filter and compare JSONs",
   "main": "index.js",
   "scripts": {
@@ -25,5 +25,5 @@
   "bugs": {
     "url": "https://github.com/lefcott19/filter-json/issues"
   },
-  "homepage": "https://github.com/lefcott19/filter-json#readme"
+  "homepage": "https://github.com/lefcott19/filter-json"
 }
