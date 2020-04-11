@@ -1,5 +1,13 @@
 const helper = require('./helper');
 
+let prefix = '$';
+/**
+ * Configures the package
+ * @param {object} Config - Configuration.
+ * @param {string} [Config.prefix] - String prefix for checking things like $gt, $in, etc. Default to '$'
+ */
+const configure = Config => Config.prefix && (prefix = Config.prefix);
+
 /* eslint-disable guard-for-in */
 const compareObjects = (obj1, obj2, excludeFields = []) => {
   if (obj1 instanceof Object && obj2 instanceof Object) {
@@ -60,17 +68,18 @@ const compare = (a, b) => {
   }
   if (b instanceof Object) {
     let A;
-    if (b.$transform instanceof Function) {
-      A = b.$transform(a);
-      delete b.$transform;
+    const transform = `${prefix}transform`; 
+    if (b[transform] instanceof Function) {
+      A = b[transform](a);
+      delete b[transform];
     }
     A = A || a;
     const keys = Object.keys(b);
-    const opKeys = keys.filter(key => key[0] === '$');
+    const opKeys = keys.filter(key => key.substring(0, prefix.length) === prefix);
     if (opKeys.length > 0) {
       for (let k = 0; k < opKeys.length; k += 1) {
         const key = opKeys[k];
-        if (!helper.compareValues(A, key, b[key])) {
+        if (!helper.compareValues(A, key, b[key], prefix)) {
           return false;
         }
       }
@@ -95,7 +104,7 @@ const check = (obj, condition) => {
     if (condition[conditionKey] === undefined) {
       continue;
     }
-    if (conditionKey === '$or') {
+    if (conditionKey === `${prefix}or`) {
       let checkedOk = false;
       for (let k = 0; k < condition[conditionKey].length; k += 1) {
         if (check(obj, condition[conditionKey][k])) {
@@ -108,7 +117,7 @@ const check = (obj, condition) => {
       }
       continue;
     }
-    if (conditionKey === '$and') {
+    if (conditionKey === `${prefix}and`) {
       for (let k = 0; k < condition[conditionKey].length; k += 1) {
         if (!check(obj, condition[conditionKey][k])) {
           return false;
@@ -138,4 +147,4 @@ const filter = (objects, condition) => {
   return objs.filter(obj => check(obj, condition));
 };
 
-module.exports = { check, filter, compareN: compareNObjects };
+module.exports = { configure, check, filter, compareN: compareNObjects };

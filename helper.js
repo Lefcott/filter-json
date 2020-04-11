@@ -1,20 +1,20 @@
-const compareValues = (value1, operator, value2) => {
+const compareValues = (value1, operator, value2, prefix) => {
   switch (operator) {
-    case '$exists':
+    case `${prefix}exists`:
       return value1 !== undefined === value2;
-    case '$eq':
+    case `${prefix}eq`:
       return value1 === value2;
-    case '$gt':
+    case `${prefix}gt`:
       return value1 > value2;
-    case '$gte':
+    case `${prefix}gte`:
       return value1 >= value2;
-    case '$lt':
+    case `${prefix}lt`:
       return value1 < value2;
-    case '$lte':
+    case `${prefix}lte`:
       return value1 <= value2;
-    case '$in':
+    case `${prefix}in`:
       return value2 && value2.includes && value2.includes(value1);
-    case '$nin':
+    case `${prefix}nin`:
       return !value2 || !value2.indexOf ? true : value2.indexOf(value1) === -1;
     default:
       console.error(
