@@ -63,6 +63,8 @@ const compareValues = (obj, value1, operator, value2, prefix) => {
       return value1 !== undefined === value2;
     case `${prefix}eq`:
       return value1 === value2;
+    case `${prefix}neq`:
+      return value1 !== value2;
     case `${prefix}gt`:
       return value1 > value2;
     case `${prefix}gte`:
