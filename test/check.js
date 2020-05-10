@@ -8,7 +8,8 @@ const ObjToCheck = {
       e: true,
       f: null,
       g: undefined,
-      h: []
+      h: [],
+      i: [{ z: 1 }, { z: 2 }]
     }
   },
   h: 'someString',
@@ -35,6 +36,12 @@ result = result && check(ObjToCheck, Condition6) === true;
 
 const Condition7 = { 'a.b.d.0': { $transform: d => d + 2, $field: 'a.b.d.2' } }; // Sums 2 to a.b.d[0] and checks if result is equal to a.b.d[2]
 result = result && check(ObjToCheck, Condition7) === true;
+
+const Condition8 = { 'a.b.i': { $arrayOr: { z: 1 } } }; // Checks OR condition on an array elements
+result = result && check(ObjToCheck, Condition8) === true;
+
+const Condition9 = { 'a.b.i': { $arrayAnd: { z: 1 } } }; // Checks OR condition on an array elements
+result = result && check(ObjToCheck, Condition9) === false;
 
 if (!result) console.error('check() failed!!!');
 
