@@ -32,9 +32,7 @@ const getRegexOrValue = str =>
 
 const compare = (a, b) => {
   // Test RegExp if indicated in condition
-  if (b instanceof RegExp) {
-    return b.test(a);
-  }
+  if (b instanceof RegExp) return b.test(a);
   if (b instanceof Object) {
     let A;
     const transform = `${prefix}transform`; 
@@ -47,15 +45,30 @@ const compare = (a, b) => {
     if (opKeys.length > 0) {
       for (let k = 0; k < opKeys.length; k += 1) {
         const key = opKeys[k];
-        if (!helper.compareValues(originalObj, A, key, b[key], prefix)) {
-          return false;
-        }
+        if (!helper.compareValues(originalObj, A, key, b[key], prefix, check)) return false;
       }
       return true;
     }
     return helper.compareObjects(a, b, []);
   }
   return a === b;
+};
+
+const getValue = (search, obj) => {
+  const splittedKey = search.split('.');
+  let currObj = obj;
+  for (let m = 0; m < splittedKey.length; m += 1) {
+    currObj = currObj[splittedKey[m]];
+    if ([null, undefined].includes(currObj) && m < splittedKey.length - 1) return null;
+  }
+  return currObj;
+};
+const setValue = (search, obj, value) => {
+  const splittedKey = typeof search === 'string' ? search.split('.') : search;
+  if ([null, undefined].includes(obj)) obj = {};
+  if (splittedKey.length > 0) obj[splittedKey[0]] = setValue(splittedKey.slice(1), obj[splittedKey[0]], value);
+  else obj = value;
+  return obj;
 };
 
 // USE EXAMPLES:
@@ -69,7 +82,6 @@ const check = (obj, condition) => {
     return obj === condition;
   }
 
-  // eslint-disable-next-line no-restricted-syntax
   for (const conditionKey in condition) {
     if (condition[conditionKey] === undefined) {
       continue;
@@ -117,9 +129,20 @@ const check = (obj, condition) => {
   return true;
 };
 
-const filter = (objects, condition) => {
+const filter = (objects, condition, ...subFilters) => {
   const objs = Array.isArray(objects) ? objects : [objects];
-  return objs.filter(obj => check(obj, condition));
+  const after = objs.filter(obj => check(obj, condition));
+  for (let k = 1; k < subFilters.length; k += 2) {
+    for (let m = 0; m < after.length; m += 1) {
+      const search = subFilters[k - 1];
+      const condition = subFilters[k];
+      let value = getValue(search, after[m]);
+      if (!Array.isArray(value)) continue;
+      value = filter(value, condition);
+      setValue(search, after[m], value);
+    }
+  }
+  return after;
 };
 
 module.exports = { configure, check, filter, compareN: compareNObjects };

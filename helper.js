@@ -53,7 +53,7 @@ const compareObjects = (Obj1, Obj2, excludeFields = []) => {
   return obj1 === obj2;
 };
 
-const compareValues = (obj, value1, operator, value2, prefix) => {
+const compareValues = (obj, value1, operator, value2, prefix, check) => {
   const value2Split = typeof value2 === 'string' && value2.split('.');
   switch (operator) {
     case `${prefix}field`:
@@ -61,6 +61,14 @@ const compareValues = (obj, value1, operator, value2, prefix) => {
       return compareObjects(value1, obj);
     case `${prefix}exists`:
       return value1 !== undefined === value2;
+    case `${prefix}arrayAnd`:
+      if (!Array.isArray(value1)) return false;
+      for (let k = 0; k < value1.length; k += 1) if (!check(value1[k], value2)) return false;
+      return true;
+    case `${prefix}arrayOr`:
+      if (!Array.isArray(value1)) return false;
+      for (let k = 0; k < value1.length; k += 1) if (check(value1[k], value2)) return true;
+      return false;
     case `${prefix}eq`:
       return value1 === value2;
     case `${prefix}neq`:
