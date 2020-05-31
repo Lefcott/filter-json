@@ -51,6 +51,29 @@ const Condition7 = { 'a.b.d.0': { $transform: d => d + 2, $field: 'a.b.d.2' } };
 check(ObjToCheck, Condition7); // returns true
 ```
 
+### Checking whether a value meets a condition:
+```js
+const { check } = require('@lefcott/filter-json');
+
+check(5, { $: { $gt: 2 } }); // returns true
+check(7, { $: { $gte: 7, $lt: 3 } }); // returns false
+```
+
+### Checking a condition over all elements in an array:
+```js
+const { check } = require('@lefcott/filter-json');
+
+check(
+  { arr: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3.5 }] },
+  { arr: { $arrayAnd: { a: { $gte: 1, $lte: 3 } } } }
+); // returns false (not all elements in the array meet the condition)
+
+check(
+  { arr: [{ a: 1 }, { a: 2 }, { a: 3 }, { a: 3.5 }] },
+  { arr: { $arrayOr: { a: { $gte: 1, $lte: 3 } } } }
+); // returns true (at least one element in the array meets the condition)
+```
+
 ### Filtering an array of objects with a condition:
 ```js
 const { filter } = require('@lefcott/filter-json');

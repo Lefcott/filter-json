@@ -83,9 +83,7 @@ const check = (obj, condition) => {
   }
 
   for (const conditionKey in condition) {
-    if (condition[conditionKey] === undefined) {
-      continue;
-    }
+    if (condition[conditionKey] === undefined) continue;
     if (conditionKey === `${prefix}or`) {
       let checkedOk = false;
       for (let k = 0; k < condition[conditionKey].length; k += 1) {
@@ -106,6 +104,13 @@ const check = (obj, condition) => {
           originalObj = null;
           return false;
         }
+      }
+      continue;
+    }
+    if (conditionKey === prefix) {
+      if (!compare(obj, condition[conditionKey])) {
+        originalObj = null;
+        return false;
       }
       continue;
     }
