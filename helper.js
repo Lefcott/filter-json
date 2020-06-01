@@ -126,4 +126,57 @@ const compareValues = (obj, value1, operator, value2, prefix, check) => {
   }
 };
 
-module.exports = { compareValues, compareObjects };
+const addCharsAfterIndexes = (str, char, indexes) => {
+  var newStr = "";
+  for (var k = 0; k < str.length; k++) {
+    newStr += str[k];
+    if (indexes.indexOf(k) != -1) {
+      newStr += char;
+    }
+  }
+  return newStr;
+};
+const quoteIgnoreRanges = (str, quote) => {
+  var insideQuotes = false;
+  quote = quote || '"';
+  var ranges = [];
+  for (var k = 0; k < str.length; k++) {
+    if (str[k] == quote && str[k - 1] != "\\") {
+      if (insideQuotes) {
+        ranges[ranges.length - 1][1] = k;
+        insideQuotes = false;
+      } else {
+        ranges[ranges.length] = [];
+        ranges[ranges.length - 1][0] = k;
+        insideQuotes = true;
+      }
+    }
+  }
+  return quote == "'" ? ranges : ranges.concat(quoteIgnoreRanges(str, "'"));
+};
+const insideSomeRange = (num, ranges) => {
+  for (var k = 0; k < ranges.length; k++) {
+    if (num === ranges[k] || (num >= ranges[k][0] && num <= ranges[k][1])) {
+      return true;
+    }
+  }
+  return false;
+};
+const getIndexesIgnoring = (str, char, ignores) => {
+  var indexes = [];
+  for (var k = 0; k < str.length; k++) {
+    if (str[k] == char && !insideSomeRange(k, ignores)) {
+      indexes[indexes.length] = k;
+    }
+  }
+  return indexes;
+};
+
+module.exports = {
+  compareValues,
+  compareObjects,
+  insideSomeRange,
+  getIndexesIgnoring,
+  quoteIgnoreRanges,
+  addCharsAfterIndexes,
+};

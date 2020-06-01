@@ -108,3 +108,11 @@ compareN(ObjectList); // returns false
 // Calling compareN with a list of fields to ignore
 compareN(ObjectList, FieldsToIgnore); // returns true
 ```
+
+### Parsing an invalid JSON (It may contain single quotes or no quotes in keys):
+```js
+const { parse } = require('@lefcott/filter-json');
+
+parse('{ test: 1 }'); // Returns { test: 1 }
+parse("{ 'hello': 'word' }"); // Returns { hello: 'word' }
+```
