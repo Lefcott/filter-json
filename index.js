@@ -190,10 +190,15 @@ const filter = (objects, condition = {}, ...subFilters) => {
     for (let m = 0; m < after.length; m += 1) {
       const search = subFilters[k - 1];
       const condition = subFilters[k];
-      let value = getValue(search, after[m]);
+      let value;
+      if (!search) value = JSON.parse(JSON.stringify(after));
+      else if (search === prefix) value = after[m];
+      else value = getValue(search, after[m]);
       if (!Array.isArray(value)) continue;
       value = filter(value, condition);
-      setValue(search, after[m], value);
+      if (!search) after = value;
+      else if (search === prefix) after[m] = value;
+      else setValue(search, after[m], value);
     }
   }
   return after;
