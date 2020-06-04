@@ -225,4 +225,4 @@ const parse = (str) => {
   }
 };
 
-module.exports = { configure, check, filter, compareN: compareNObjects, parse };
+module.exports = { configure, check, filter, compareN: compareNObjects, parse, getValue };
