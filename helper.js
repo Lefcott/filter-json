@@ -116,7 +116,7 @@ const compareValues = (obj, value1, operator, value2, prefix, check) => {
       return !value1.includes(value2);
     default:
       console.error(
-        `object.js: Unknown operator "${operator}"\n\nCompared value:\n${JSON.stringify(
+        `filter-json: Unknown operator "${operator}"\n\nCompared value:\n${JSON.stringify(
           value1,
           null,
           2

@@ -91,6 +91,19 @@ filter(OriginalObjects, { 'a.b': { $gte: 3 } });
 // Returns [{ a: { b: 3 } }, { a: { b: 4 } }, { a: { b: 5 } }]
 ```
 
+### Agreggate with min and max:
+```js
+const { filter } = require('@lefcott/filter-json');
+
+filter([{ a: 1 }, { a: 3 }, { a: 2 }], {
+  _aggregate: { field: "a", type: "min" },
+}); // Returns [{ a: 1 }]
+
+filter([{ a: 1 }, { a: 3 }, { a: 2 }], {
+  _aggregate: { field: "a", type: "max" },
+}); // Returns [{ a: 3 }]
+```
+
 ### Checking if all objects of an array are equal
 ```js
 const { compareN } = require('@lefcott/filter-json');

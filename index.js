@@ -143,9 +143,49 @@ const check = (obj, condition) => {
   return true;
 };
 
-const filter = (objects, condition, ...subFilters) => {
+const aggregate = (objs = [], search, type) => {
+  if (!objs.length) return [];
+  let last = getValue(search, objs[0] || {});
+  let [lastObj] = objs;
+  for (let k = 0; k < objs.length; k += 1) {
+    const curr = getValue(search, objs[k]);
+    if (type === "max") {
+      if (curr > last) {
+        last = curr;
+        lastObj = objs[k];
+      }
+      continue;
+    }
+    if (type === "min") {
+      if (curr < last) {
+        last = curr;
+        lastObj = objs[k];
+      }
+      continue;
+    }
+    console.error(`filter-json: Unknown aggregate type: "${type}"`);
+    return objs;
+  }
+  return [lastObj];
+};
+
+const filter = (objects, condition = {}, ...subFilters) => {
   const objs = Array.isArray(objects) ? objects : [objects];
-  const after = objs.filter((obj) => check(obj, condition));
+  let agg;
+  if (condition._aggregate) {
+    agg = condition._aggregate;
+    delete condition._aggregate;
+    if (!agg.field) {
+      console.error(`filter-json: Invalid aggregate field: "${agg.field}"`);
+      return objects;
+    }
+    if (!agg.type) {
+      console.error(`filter-json: Invalid aggregate type: "${agg.type}"`);
+      return objects;
+    }
+  }
+  let after = objs.filter((obj) => check(obj, condition));
+  if (agg) after = aggregate(objs, agg.field, agg.type);
   for (let k = 1; k < subFilters.length; k += 2) {
     for (let m = 0; m < after.length; m += 1) {
       const search = subFilters[k - 1];
@@ -225,4 +265,11 @@ const parse = (str) => {
   }
 };
 
-module.exports = { configure, check, filter, compareN: compareNObjects, parse, getValue };
+module.exports = {
+  configure,
+  check,
+  filter,
+  compareN: compareNObjects,
+  parse,
+  getValue,
+};

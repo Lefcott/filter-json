@@ -6,6 +6,7 @@ console.log = () => {
 const checkResult =
   require("./check") &&
   require("./filter") &&
+  require("./aggregate") &&
   require("./compareN") &&
   require("./parse");
 const result = checkResult && !logOccurred;
