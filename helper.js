@@ -91,6 +91,10 @@ const compareValues = (obj, value1, operator, value2, prefix, check) => {
       return false;
     case `${prefix}eq`:
       return value1 === value2;
+    case `${prefix}!eq`:
+      return value1 !== value2;
+    case `${prefix}neq`:
+      return value1 !== value2;
     case `${prefix}!neq`:
       return value1 === value2;
     case `${prefix}like`:
