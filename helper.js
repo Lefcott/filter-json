@@ -52,6 +52,25 @@ const compareObjects = (Obj1, Obj2, excludeFields = []) => {
   return obj1 === obj2;
 };
 
+const like = (value1, value2) => {
+  if (typeof value1 === "number") value1 = value1.toString();
+  if (typeof value1 !== "string") return false;
+  if (value2 instanceof RegExp) return value2.test(value1);
+  if (typeof value2 !== "string") return false;
+  const slashes = (value2.match(/\//g) || []).length;
+  if (slashes >= 2) {
+    try {
+      const lastSlashIndex = value2.lastIndexOf("/");
+      const content = value2.substring(1, lastSlashIndex);
+      const flags = value2.substr(lastSlashIndex + 1);
+      return new RegExp(content, flags).test(value1);
+    } catch (e) {
+      return false;
+    }
+  }
+  return false;
+};
+
 const compareValues = (obj, value1, operator, value2, prefix, check) => {
   const value2Split = typeof value2 === "string" && value2.split(".");
   switch (operator) {
@@ -74,10 +93,10 @@ const compareValues = (obj, value1, operator, value2, prefix, check) => {
       return value1 === value2;
     case `${prefix}!neq`:
       return value1 === value2;
-    case `${prefix}!eq`:
-      return value1 !== value2;
-    case `${prefix}neq`:
-      return value1 !== value2;
+    case `${prefix}like`:
+      return like(value1, value2);
+    case `${prefix}!like`:
+      return !like(value1, value2);
     case `${prefix}gt`:
       return value1 > value2;
     case `${prefix}!lte`:

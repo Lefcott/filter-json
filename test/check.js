@@ -20,6 +20,18 @@ let Condition;
 Condition = { "a.b.c.g": { $exists: true } }; // Checks that a.b.c.g exists
 result = result && check(ObjToCheck, Condition) === false;
 
+Condition = { "a.b.c": { $like: '/^someS/i' } }; // Checks that a.b.c meets regex condition
+result = result && check(ObjToCheck, Condition) === true;
+
+Condition = { "a.b.c": { $like: '/^somes/' } }; // Checks that a.b.c meets regex condition
+result = result && check(ObjToCheck, Condition) === false;
+
+Condition = { "a.b.c": { $like: /^someS/i } }; // Checks that a.b.c meets regex condition
+result = result && check(ObjToCheck, Condition) === true;
+
+Condition = { "a.b.c": { $like: /^somes/ } }; // Checks that a.b.c meets regex condition
+result = result && check(ObjToCheck, Condition) === false;
+
 Condition = { h: { $field: "a.b.c" } }; // Checks that h equals a.b.c
 result = result && check(ObjToCheck, Condition) === true;
 
