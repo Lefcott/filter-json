@@ -28,27 +28,40 @@ const ObjToCheck = {
 };
 
 // Some examples
+let Condition;
 
-const Condition1 = { 'a.b.c.g': { $exists: true } }; // Checks that a.b.c.g exists
-check(ObjToCheck, Condition1); // returns false
+Condition = { 'a.b.c.g': { $exists: true } }; // Checks that a.b.c.g exists
+check(ObjToCheck, Condition); // returns false
 
-const Condition2 = { h: { $field: 'a.b.c' } }; // Checks that h equals a.b.c
-check(ObjToCheck, Condition2); // returns true
+Condition = { "a.b.c": { $like: '/^someS/i' } }; // Checks that a.b.c meets regex condition
+check(ObjToCheck, Condition); // returns true
 
-const Condition3 = { 'a.b.e': true }; // Checks a.b.e equals true
-check(ObjToCheck, Condition3); // returns true
+Condition = { "a.b.c": { $like: '/^somes/' } }; // Checks that a.b.c meets regex condition
+check(ObjToCheck, Condition); // returns false
 
-const Condition4 = { i: { j: 1234 } }; // Checks i equals json: { j: 1234 }
-check(ObjToCheck, Condition4); // returns true
+Condition = { "a.b.c": { $like: /^someS/i } }; // Checks that a.b.c meets regex condition
+check(ObjToCheck, Condition); // returns true
 
-const Condition5 = { 'a.b.d.length': 4 }; // Checks that length of array a.b.d equals 4
-check(ObjToCheck, Condition5); // returns true
+Condition = { "a.b.c": { $like: /^somes/ } }; // Checks that a.b.c meets regex condition
+check(ObjToCheck, Condition); // returns false
 
-const Condition6 = { 'a.b.d.3': 4 }; // Checks a.b.d[3] equals 4
-check(ObjToCheck, Condition6); // returns true
+Condition = { h: { $field: 'a.b.c' } }; // Checks that h equals a.b.c
+check(ObjToCheck, Condition); // returns true
 
-const Condition7 = { 'a.b.d.0': { $transform: d => d + 2, $field: 'a.b.d.2' } }; // Sums 2 to a.b.d[0] and checks if result is equal to a.b.d[2]
-check(ObjToCheck, Condition7); // returns true
+Condition = { 'a.b.e': true }; // Checks a.b.e equals true
+check(ObjToCheck, Condition); // returns true
+
+Condition = { i: { j: 1234 } }; // Checks i equals json: { j: 1234 }
+check(ObjToCheck, Condition); // returns true
+
+Condition = { 'a.b.d.length': 4 }; // Checks that length of array a.b.d equals 4
+check(ObjToCheck, Condition); // returns true
+
+Condition = { 'a.b.d.3': 4 }; // Checks a.b.d[3] equals 4
+check(ObjToCheck, Condition); // returns true
+
+Condition = { 'a.b.d.0': { $transform: d => d + 2, $field: 'a.b.d.2' } }; // Sums 2 to a.b.d[0] and checks if result is equal to a.b.d[2]
+check(ObjToCheck, Condition); // returns true
 ```
 
 ### Checking whether a value meets a condition:
