@@ -1,6 +1,6 @@
 {
   "name": "@lefcott/filter-json",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "description": "Check, filter and compare JSONs",
   "main": "index.js",
   "scripts": {
