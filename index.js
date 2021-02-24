@@ -273,7 +273,7 @@ const parse = (str) => {
 
 module.exports = {
   configure,
-  check,
+  checkJsonCondition: check,
   filter,
   compareN: compareNObjects,
   parse,

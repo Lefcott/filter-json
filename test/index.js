@@ -4,7 +4,7 @@ console.log = () => {
 };
 
 const checkResult =
-  require("./check") &&
+  require("./checkJsonCondition") &&
   require("./filter") &&
   require("./aggregate") &&
   require("./compareN") &&
