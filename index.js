@@ -34,6 +34,7 @@ const compare = (a, b) => {
   // Test RegExp if indicated in condition
   if (b instanceof RegExp) return b.test(a);
   if (b instanceof Object) {
+    b = { ...b };
     let A;
     const transform = `${prefix}transform`;
     if (b[transform] instanceof Function) A = b[transform](a);
